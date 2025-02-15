@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeAnalysisInterfaceDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisInterfaceDetail">
+        <result column="id" property="id" />
+        <result column="relation_task_id" property="relationTaskId" />
+        <result column="taskinfo_id" property="taskinfoId" />
+        <result column="interface_name" property="interfaceName" />
+        <result column="path" property="path" />
+        <result column="method" property="method" />
+        <result column="type" property="type" />
+        <result column="change_type" property="changeType" />
+        <result column="count_day" property="countDay" />
+        <result column="front_gateway" property="frontGateway" />
+        <result column="front_apps" property="frontApps" />
+        <result column="Description" property="description" />
+        <result column="extra" property="extra" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+
+    <resultMap id="ServiceNameResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisInterfaceDetailExt">
+        <result column="id" property="id" />
+        <result column="relation_task_id" property="relationTaskId" />
+        <result column="taskinfo_id" property="taskinfoId" />
+        <result column="interface_name" property="interfaceName" />
+        <result column="project_name" property="projectName" />
+        <result column="path" property="path" />
+        <result column="method" property="method" />
+        <result column="type" property="type" />
+        <result column="change_type" property="changeType" />
+        <result column="count_day" property="countDay" />
+        <result column="front_gateway" property="frontGateway" />
+        <result column="front_apps" property="frontApps" />
+        <result column="Description" property="description" />
+        <result column="extra" property="extra" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="ServiceAffectResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisInterfaceDetailAffectExt">
+        <result column="relation_task_id" property="relationTaskId" />
+        <result column="taskinfo_id" property="taskinfoId" />
+        <result column="interface_name" property="interfaceName" />
+        <result column="path" property="path" />
+        <result column="count_day" property="countDay" />
+        <result column="front_gateway" property="frontGateway" />
+        <result column="front_apps" property="frontApps" />
+        <result column="project_name" property="projectName" />
+        <result column="project_id" property="projectId" />
+        <result column="extra" property="extra" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, relation_task_id, taskinfo_id, interface_name, path, method, type, change_type, Description, extra, create_time, update_time
+    </sql>
+
+    <sql id="Ext_Column_List">
+        interface.id, interface.relation_task_id, interface.taskinfo_id, info.project_name, interface.interface_name, interface.path, interface.method, interface.type, interface.change_type,interface.count_day,interface.front_gateway,interface.front_apps, interface.Description, interface.extra, interface.create_time, interface.update_time
+    </sql>
+
+
+    <sql id="Affect_Column_List">
+        caid.relation_task_id, caid.taskinfo_id,caid.interface_name ,caid.`path` ,caid.`type` , caid.count_day , caid.front_apps , cdti.project_name , cdti.project_id, cdti.extra
+    </sql>
+
+    <insert id="replaceIntoCodeAnalysisInterfaceDetail">
+        INSERT INTO code_analysis_interface_detail (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="relationTaskId != null">
+            relation_task_id,
+        </if>
+        <if test="taskinfoId != null">
+            taskinfo_id,
+        </if>
+        <if test="interfaceName != null">
+            interface_name,
+        </if>
+        <if test="path != null">
+            path,
+        </if>
+        <if test="method != null">
+            method,
+        </if>
+        <if test="type != null">
+            type,
+        </if>
+        <if test="changeType != null">
+            change_type,
+        </if>
+        <if test="countDay != null">
+            count_day,
+        </if>
+        <if test="frontGateway != null">
+            front_gateway,
+        </if>
+        <if test="frontApps != null">
+            front_apps,
+        </if>
+        <if test="description != null">
+            Description,
+        </if>
+
+        extra )
+
+        VALUES(
+        <if test="id != null">
+            #{id},
+        </if>
+        <if test="relationTaskId != null">
+            #{relationTaskId},
+        </if>
+        <if test="taskinfoId != null">
+            #{taskinfoId},
+        </if>
+        <if test="interfaceName != null">
+            #{interfaceName},
+        </if>
+        <if test="path != null">
+            #{path},
+        </if>
+        <if test="method != null">
+            #{method},
+        </if>
+        <if test="type != null">
+            #{type},
+        </if>
+        <if test="changeType != null">
+            #{changeType},
+        </if>
+        <if test="countDay != null">
+            #{countDay},
+        </if>
+        <if test="frontGateway != null">
+            #{frontGateway},
+        </if>
+        <if test="frontApps != null">
+            #{frontApps},
+        </if>
+        <if test="description != null">
+            #{description},
+        </if>
+        extra)
+        ON DUPLICATE KEY UPDATE
+        <if test="relationTaskId != null">
+            relation_task_id=#{relationTaskId}
+        </if>
+        <if test="taskinfoId != null">
+            ,taskinfo_id=#{taskinfoId}
+        </if>
+        <if test="interfaceName != null">
+            ,interface_name=#{interfaceName}
+        </if>
+        <if test="path != null">
+            ,path=#{path}
+        </if>
+        <if test="method != null">
+            ,method=#{method}
+        </if>
+        <if test="type != null">
+            ,type=#{type}
+        </if>
+        <if test="changeType != null">
+            ,change_type=#{changeType}
+        </if>
+        <if test="countDay != null">
+            ,count_day=#{countDay}
+        </if>
+        <if test="frontGateway != null">
+            ,front_gateway=#{frontGateway}
+        </if>
+        <if test="frontApps != null">
+            ,front_apps=#{frontApps}
+        </if>
+        <if test="description != null">
+            ,Description=#{description}
+        </if>
+    </insert>
+
+    <select id="serachInterface" parameterType="com.ruqimobility.precisiontest.entity.request.AffectInterfaceReq" resultMap="ServiceNameResultMap">
+        select
+        <include refid="Ext_Column_List" />
+        from code_analysis_interface_detail interface,code_diff_task_info info
+        where info.id = interface.taskinfo_id
+        <if test="InterfaceName != null and InterfaceName != ''">
+            and interface.interface_name like CONCAT('%',#{InterfaceName},'%')
+        </if>
+        <if test="path != null and path != ''">
+            and interface.path like CONCAT('%',#{path},'%')
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and interface.relation_task_id = #{taskId,jdbcType=INTEGER}
+        </if>
+        <if test="taskInfoId != null and taskInfoId != ''">
+            and interface.taskinfo_id = #{taskInfoId,jdbcType=INTEGER}
+        </if>
+        order by interface.extra asc
+    </select>
+
+
+    <select id="interfaceAffect"  resultMap="ServiceAffectResultMap">
+        select
+        <include refid="Affect_Column_List" />
+        from code_analysis_interface_detail caid ,code_diff_task_info cdti
+        where caid.taskinfo_id  = cdti.id And caid.relation_task_id =#{taskId} AND caid.front_apps is not null
+    </select>
+
+</mapper>

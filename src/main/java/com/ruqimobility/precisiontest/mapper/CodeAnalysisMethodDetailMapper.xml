@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeAnalysisMethodDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisMethodDetail">
+        <id column="id" property="id" />
+        <result column="task_relation_id" property="taskRelationId" />
+        <result column="service_id" property="serviceId" />
+        <result column="package_name" property="packageName" />
+        <result column="class_name" property="className" />
+        <result column="method_name" property="methodName" />
+        <result column="path" property="path" />
+        <result column="change_type" property="changeType" />
+        <result column="interface_count" property="interfaceCount" />
+        <result column="call_chain_count" property="callChainCount" />
+        <result column="Description" property="description" />
+        <result column="extra" property="extra" />
+        <result column="affect_apis" property="affectApis" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_relation_id, service_id, package_name, class_name, method_name, path, change_type, interface_count, call_chain_count, Description, extra,affect_apis, create_time, update_time
+    </sql>
+
+    <insert id="replaceIntoMethod" parameterType="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisMethodDetail">
+        REPLACE INTO code_analysis_method_detail (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="taskRelationId != null">
+            task_relation_id,
+        </if>
+        <if test="serviceId != null">
+            service_id,
+        </if>
+        <if test="packageName != null">
+            package_name,
+        </if>
+        <if test="className != null">
+            class_name,
+        </if>
+        <if test="methodName != null">
+            method_name,
+        </if>
+        <if test="path != null">
+            path,
+        </if>
+        <if test="changeType != null">
+            change_type,
+        </if>
+        <if test="interfaceCount != null">
+            interface_count,
+        </if>
+        <if test="callChainCount != null">
+            call_chain_count,
+        </if>
+        <if test="description != null">
+            description,
+        </if>
+
+        extra )
+
+        VALUES(
+        <if test="id != null">
+            #{id},
+        </if>
+        <if test="taskRelationId != null">
+            #{taskRelationId},
+        </if>
+        <if test="serviceId != null">
+            #{serviceId},
+        </if>
+        <if test="packageName != null">
+            #{packageName},
+        </if>
+        <if test="className != null">
+            #{className},
+        </if>
+        <if test="methodName != null">
+            #{methodName},
+        </if>
+        <if test="path != null">
+            #{path},
+        </if>
+        <if test="changeType != null">
+            #{changeType},
+        </if>
+        <if test="interfaceCount != null">
+            #{interfaceCount},
+        </if>
+        <if test="callChainCount != null">
+            #{callChainCount},
+        </if>
+        <if test="description != null">
+            #{description},
+        </if>
+        extra)
+
+    </insert>
+
+
+    <select id="searchMethods" parameterType="com.ruqimobility.precisiontest.entity.request.AffectMethodReq" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from code_analysis_method_detail
+        where 1=1
+        <if test="methodName != null and methodName != ''">
+            and method_name like CONCAT('%',#{methodName},'%')
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and task_relation_id = #{taskId,jdbcType=INTEGER}
+        </if>
+        <if test="taskInfoId != null and taskInfoId != ''">
+            and service_id = #{taskInfoId,jdbcType=INTEGER}
+        </if>
+        group by class_name,method_name
+        order by call_chain_count desc
+    </select>
+</mapper>

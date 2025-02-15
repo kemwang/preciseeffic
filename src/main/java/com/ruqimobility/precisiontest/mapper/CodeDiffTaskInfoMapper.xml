@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeDiffTaskInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeDiffTaskInfo">
+        <id column="id" property="id" />
+        <result column="project_name" property="projectName" />
+        <result column="project_id" property="projectId" />
+        <result column="order_id" property="orderId" />
+        <result column="base_branch" property="baseBranch" />
+        <result column="base_commit_id" property="baseCommitId" />
+        <result column="base_commit_content" property="baseCommitContent" />
+        <result column="compare_branch" property="compareBranch" />
+        <result column="compare_commit_id" property="compareCommitId" />
+        <result column="compare_commit_content" property="compareCommitContent" />
+        <result column="deploy_branch;" property="deployBranch" />
+        <result column="task_relation_id" property="taskRelationId" />
+        <result column="extra" property="extra" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="projectUrl" property="projectUrl" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, project_name, project_id, order_id, base_branch, base_commit_id, base_commit_content, compare_branch, compare_commit_id, compare_commit_content, deploy_branch, task_relation_id, extra, create_time, update_time, projectUrl
+    </sql>
+
+</mapper>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeAnalysisSummaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisSummary">
+        <result column="id" property="id" />
+        <result column="task_relation_id" property="taskRelationId" />
+        <result column="affect_service_id" property="affectServiceId" />
+        <result column="affect_files" property="affectFiles" />
+        <result column="affect_config_files" property="affectConfigFiles" />
+        <result column="affect_methods" property="affectMethods" />
+        <result column="affect_code_lines" property="affectCodeLines" />
+        <result column="affect_code_add_lines" property="affectCodeAddLines" />
+        <result column="affect_config_add_lines" property="affectConfigAddLines" />
+        <result column="affect_code_del_lines" property="affectCodeDelLines" />
+        <result column="affect_interface" property="affectInterface" />
+        <result column="affect_call_chain" property="affectCallChain" />
+        <result column="risk_level" property="riskLevel" />
+        <result column="extra" property="extra" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_relation_id, affect_service_id, affect_files, affect_config_files, affect_methods, affect_code_lines, affect_code_add_lines, affect_config_add_lines, affect_code_del_lines, affect_interface, affect_call_chain, risk_level, create_time, update_time
+    </sql>
+
+    <insert id="replaceIntoSummary" parameterType="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisSummary">
+        REPLACE INTO code_analysis_summary (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="taskRelationId != null">
+            task_relation_id,
+        </if>
+        <if test="affectServiceId != null">
+            affect_service_id,
+        </if>
+        <if test="affectFiles != null">
+            affect_files,
+        </if>
+        <if test="affectConfigFiles != null">
+            affect_config_files,
+        </if>
+        <if test="affectMethods != null">
+            affect_methods,
+        </if>
+        <if test="affectCodeLines != null">
+            affect_code_lines,
+        </if>
+        <if test="affectCodeAddLines != null">
+            affect_code_add_lines,
+        </if>
+        <if test="affectConfigAddLines != null">
+            affect_config_add_lines,
+        </if>
+        <if test="affectCodeDelLines != null">
+            affect_code_del_lines,
+        </if>
+        <if test="affectInterface != null">
+            affect_interface,
+        </if>
+        <if test="affectCallChain != null">
+            affect_call_chain,
+        </if>
+        <if test="riskLevel != null">
+            risk_level,
+        </if>
+            extra )
+
+        VALUES(
+        <if test="id != null">
+            #{id,jdbcType=BIGINT},
+        </if>
+        <if test="taskRelationId != null">
+            #{taskRelationId},
+        </if>
+        <if test="affectServiceId != null">
+            #{affectServiceId},
+        </if>
+        <if test="affectFiles != null">
+            #{affectFiles},
+        </if>
+        <if test="affectConfigFiles != null">
+            #{affectConfigFiles},
+        </if>
+        <if test="affectMethods != null">
+            #{affectMethods},
+        </if>
+        <if test="affectCodeLines != null">
+            #{affectCodeLines},
+        </if>
+        <if test="affectCodeAddLines != null">
+            #{affectCodeAddLines},
+        </if>
+        <if test="affectConfigAddLines != null">
+            affect_config_add_lines,
+        </if>
+        <if test="affectCodeDelLines != null">
+            #{affectCodeDelLines},
+        </if>
+        <if test="affectInterface != null">
+            #{affectInterface},
+        </if>
+        <if test="affectCallChain != null">
+            #{affectCallChain},
+        </if>
+        <if test="riskLevel != null">
+            #{riskLevel},
+        </if>
+         extra)
+
+    </insert>
+
+
+    <select id="totalSummary" resultMap="BaseResultMap">
+        select count(1) as extra,
+               sum(affect_files) as affect_files,
+               sum(affect_config_files) as affect_config_files,
+               sum(affect_methods) as affect_methods,
+               sum(affect_code_lines) as affect_code_lines,
+               sum(affect_interface) as affect_interface,
+               sum(affect_call_chain) as affect_call_chain,
+               case when affect_interface is null then 2
+                    when sum(affect_interface)>5 then 1
+                    else 0
+                end as risk_level
+        from code_analysis_summary
+        where task_relation_id = #{taskId}
+        <if test="riskLevel > 0 ">
+            having sum(affect_interface)>5
+        </if>
+    </select>
+    <select id="getAffectInfoByStory" resultType="com.ruqimobility.precisiontest.entity.dto.AffectInfoDto">
+        SELECT cdt.order_code as orderCode,cas.affect_methods as affectMethods,
+       case when cas.affect_call_chain is null then 0 else cas.affect_call_chain end as affectCallChain,
+       cas.affect_code_lines as affectCodeLines
+        FROM precision_test.code_analysis_summary cas
+        LEFT JOIN precision_test.code_diff_task cdt ON cdt.id = cas.task_relation_id
+        WHERE cdt.story_ids LIKE CONCAT('%', #{storyId,jdbcType=VARCHAR}, '%')
+        ORDER BY cdt.create_time DESC
+        LIMIT 1
+    </select>
+    <select id="getAffectInfoByStoryId"
+            resultType="com.ruqimobility.precisiontest.entity.response.StoryAffectInfoResp">
+        select cas.task_relation_id as taskId, case when cas.affect_call_chain is null then 0 else cas.affect_call_chain end as affectCallChain, cdt.story_ids AS storyIds, cdt.order_code as orderCode, cdt.task_name as taskName, cas.affect_code_lines as affectCodeLines from precision_test.code_analysis_summary cas
+         left join precision_test.code_diff_task cdt on cdt.id  = cas.task_relation_id
+         left join precision_test.call_graph_task_info cgti  on cgti.task_id = cas.task_relation_id
+        where cdt.story_ids  like CONCAT('%', #{storyId,jdbcType=VARCHAR}, '%') and cdt.`type` = 0 order by taskId DESC limit 1
+       </select>
+
+</mapper>

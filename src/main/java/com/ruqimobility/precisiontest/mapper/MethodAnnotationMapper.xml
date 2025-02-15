@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.MethodAnnotationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.MethodAnnotation">
+        <id column="method_hash" property="methodHash" />
+        <result column="annotation_name" property="annotationName" />
+        <result column="attribute_name" property="attributeName" />
+        <result column="attribute_value" property="attributeValue" />
+        <result column="full_method" property="fullMethod" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        method_hash, annotation_name, attribute_name, attribute_value, full_method
+    </sql>
+    <select id="getMethodAnnotation"
+            resultType="com.ruqimobility.precisiontest.entity.persistent.MethodAnnotation">
+        select * from  ${tableName}
+        where full_method = #{fullMethod}
+    </select>
+    <select id="getApiUri" resultType="com.ruqimobility.precisiontest.entity.persistent.MethodAnnotation">
+        select * from  ${tableName}
+        where full_method = #{fullMethod} and annotation_name like CONCAT('%','org.springframework.web.bind.annotation.','%')
+          and attribute_value like CONCAT('%','/','%')
+    </select>
+    <select id="getMethodAnnotationlikely"
+            resultType="com.ruqimobility.precisiontest.entity.persistent.MethodAnnotation">
+        select * from  ${tableName}
+        where full_method like CONCAT('%',#{fullMethod},'%')
+    </select>
+</mapper>

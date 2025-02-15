@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.QxJarInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.QxJarInfo">
+        <id column="id" property="id" />
+        <result column="env" property="env" />
+        <result column="git_project_id" property="gitProjectId" />
+        <result column="git_http_url" property="gitHttpUrl" />
+        <result column="branch" property="branch" />
+        <result column="commit_id" property="commitId" />
+        <result column="apply_order_id" property="applyOrderId" />
+        <result column="download_Jar_url" property="downloadJarUrl" />
+        <result column="dir" property="dir" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, env, git_project_id, git_http_url, branch, commit_id, apply_order_id, download_Jar_url
+    </sql>
+    <insert id="upsert">
+        insert into qx_jar_info(id, env, git_project_id, git_http_url, branch, commit_id, apply_order_id, download_Jar_url)
+        values (#{id}, #{env}, #{gitProjectId},#{gitHttpUrl}, #{branch}, #{commitId}, #{applyOrderId},
+                #{downloadJarUrl})
+            on duplicate key
+        update env = #{env},git_project_id = #{gitProjectId},
+            git_http_url = #{gitHttpUrl},branch = #{branch}, commit_id = #{commitId}, apply_order_id=#{applyOrderId},
+            download_Jar_url = #{downloadJarUrl}
+    </insert>
+</mapper>

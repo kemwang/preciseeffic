@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CallGraphTaskInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CallGraphTaskInfo">
+        <id column="id" property="id" />
+        <result column="task_id" property="taskId" />
+        <result column="task_info_id" property="taskInfoId" />
+        <result column="git_project_id" property="gitProjectId" />
+        <result column="git_project_name" property="gitProjectName" />
+        <result column="branch" property="branch" />
+        <result column="jar_path" property="jarPath" />
+        <result column="package_name" property="packageName" />
+        <result column="call_graph_status" property="callGraphStatus" />
+        <result column="retry" property="retry" />
+        <result column="extra" property="extra" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_id, task_info_id, git_project_id, git_project_name, branch, jar_path, package_name, call_graph_status,retry, extra
+    </sql>
+    <insert id="replaceIntoCallGraphTaskInfo">
+        REPLACE INTO call_graph_task_info (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="taskId != null">
+            task_id,
+        </if>
+        <if test="taskInfoId != null">
+            task_info_id,
+        </if>
+        <if test="gitProjectId != null">
+            git_project_id,
+        </if>
+        <if test="gitProjectName != null">
+            git_project_name,
+        </if>
+        <if test="branch != null">
+            branch,
+        </if>
+        <if test="jarPath != null">
+            jar_path,
+        </if>
+        <if test="packageName != null">
+            package_name,
+        </if>
+        <if test="callGraphStatus != null">
+            call_graph_status,
+        </if>
+        <if test="allClassMethod != null">
+            all_class_method
+        </if>
+        )
+
+        VALUES(
+        <if test="id != null">
+            #{id},
+        </if>
+        <if test="taskId != null">
+            #{taskId},
+        </if>
+        <if test="taskInfoId != null">
+            #{taskInfoId},
+        </if>
+        <if test="gitProjectId != null">
+            #{gitProjectId},
+        </if>
+        <if test="gitProjectName != null">
+            #{gitProjectName},
+        </if>
+        <if test="branch != null">
+            #{branch},
+        </if>
+        <if test="jarPath != null">
+            #{jarPath},
+        </if>
+        <if test="packageName != null">
+            #{packageName},
+        </if>
+        <if test="callGraphStatus != null">
+            #{callGraphStatus},
+        </if>
+        <if test="allClassMethod != null">
+            #{allClassMethod}
+        </if>
+        )
+    </insert>
+
+</mapper>

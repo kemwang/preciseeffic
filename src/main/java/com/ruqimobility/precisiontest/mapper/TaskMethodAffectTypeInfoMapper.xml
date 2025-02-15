@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.TaskMethodAffectTypeInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.TaskMethodAffectTypeInfo">
+        <id column="id" property="id" />
+        <result column="task_id" property="taskId" />
+        <result column="service_id" property="serviceId" />
+        <result column="full_class_method_name" property="fullClassMethodName" />
+        <result column="method_type" property="methodType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_id, service_id, full_class_method_name, method_type
+    </sql>
+
+</mapper>

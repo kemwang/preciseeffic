@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.TaskPipelineMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.TaskPipeline">
+        <id column="id" property="id" />
+        <result column="task_id" property="taskId" />
+        <result column="git_project_id" property="gitProjectId" />
+        <result column="git_project_name" property="gitProjectName" />
+        <result column="deploy_status" property="deployStatus" />
+        <result column="gitclone_status" property="gitcloneStatus" />
+        <result column="analysis_module_status" property="analysisModuleStatus" />
+        <result column="download_jar_status" property="downloadJarStatus" />
+        <result column="code_diff_status" property="codeDiffStatus" />
+        <result column="callgraph_status" property="callgraphStatus" />
+        <result column="code_diff_statistic_status" property="codeDiffStatisticStatus" />
+        <result column="callgraph_statistic_status" property="callgraphStatisticStatus" />
+        <result column="progress" property="progress" />
+        <result column="result_status" property="resultStatus" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_id, git_project_id, git_project_name, deploy_status, gitclone_status, analysis_module_status, download_jar_status, code_diff_status, callgraph_status, code_diff_statistic_status, callgraph_statistic_status, progress, result_status, update_time
+    </sql>
+    <insert id="replaceInto">
+        REPLACE INTO task_pipeline (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="taskId != null">
+            task_id,
+        </if>
+        <if test="gitProjectId != null">
+            git_project_id,
+        </if>
+        <if test="gitProjectName != null">
+            git_project_name
+        </if>
+        )
+
+        VALUES(
+        <if test="id != null">
+            #{id},
+        </if>
+        <if test="taskId != null">
+            #{taskId},
+        </if>
+        <if test="gitProjectId != null">
+            #{gitProjectId},
+        </if>
+        <if test="gitProjectName != null">
+            #{gitProjectName}
+        </if>
+       )
+    </insert>
+
+</mapper>

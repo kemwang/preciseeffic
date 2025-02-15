@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.QixiaoTestOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.QixiaoTestOrder">
+        <id column="id" property="id" />
+        <result column="code" property="code" />
+        <result column="status" property="status" />
+        <result column="order_type" property="orderType" />
+        <result column="tapd_project_id" property="tapdProjectId" />
+        <result column="tapd_storyIds" property="tapdStoryids" />
+        <result column="tapd_bugIds" property="tapdBugids" />
+        <result column="operation_type" property="operationType" />
+        <result column="testers" property="testers" />
+        <result column="creater" property="creater" />
+        <result column="test_applications" property="testApplications" />
+        <result column="frontend_applications" property="frontendApplications" />
+        <result column="is_delete" property="isDelete" />
+        <result column="extra" property="extra" />
+        <result column="submit_test_time" property="submitTestTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, code, status, order_type, tapd_project_id, tapd_storyIds, tapd_bugIds, operation_type, testers, creater, test_applications, frontend_applications, is_delete, extra, submit_test_time, create_time, update_time
+    </sql>
+
+</mapper>

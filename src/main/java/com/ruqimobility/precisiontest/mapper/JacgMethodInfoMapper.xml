@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.JacgMethodInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.JacgMethodInfo">
+        <id column="method_hash" property="methodHash" />
+        <result column="simple_class_name" property="simpleClassName" />
+        <result column="access_flags" property="accessFlags" />
+        <result column="method_name" property="methodName" />
+        <result column="full_method" property="fullMethod" />
+        <result column="simple_return_type" property="simpleReturnType" />
+        <result column="return_type" property="returnType" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        method_hash, simple_class_name, access_flags, method_name, full_method, simple_return_type, return_type
+    </sql>
+
+    <select id="fuzzySelectCalleeFullMethods" resultType="java.lang.String">
+        select full_method from ${tableName}
+        where full_method like concat('%',#{className,jdbcType=VARCHAR},'%')
+    </select>
+</mapper>

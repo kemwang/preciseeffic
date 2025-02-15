@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeDiffTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeDiffTask">
+        <id column="id" property="id" />
+        <result column="path" property="path" />
+        <result column="order_id" property="orderId" />
+        <result column="order_code" property="orderCode" />
+        <result column="story_ids" property="storyIds" />
+        <result column="creator" property="creator" />
+        <result column="type" property="type" />
+        <result column="progress" property="progress" />
+        <result column="extra" property="extra" />
+        <result column="tapd_project_name" property="tapdProjectName" />
+        <result column="tapd_project_id" property="tapdProjectId" />
+        <result column="story_url" property="storyUrl" />
+        <result column="story_info" property="storyInfo" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+
+    <!-- 查询需求对应统计数据 -->
+    <resultMap id="OnlineStoryMap" type="com.ruqimobility.precisiontest.entity.dto.OnlineStoryDto">
+        <result column="story_ids" property="storyIds" />
+        <result column="affect_code_lines" property="affectCodeLines" />
+        <result column="affect_call_chain" property="affectCallChain" />
+        <result column="affect_interface" property="affectInterface" />
+    </resultMap>
+    <!-- 按提测单分组接口 -->
+    <resultMap id="taskByCodeMap" type="com.ruqimobility.precisiontest.entity.response.controller.TaskByCodeResp">
+        <id column="id" property="id" />
+        <result column="task_name" property="taskName" />
+        <result column="order_code" property="orderCode" />
+        <result column="tapd_project_name" property="tapdProjectName" />
+        <result column="tapd_project_id" property="tapdProjectId" />
+        <result column="story_url" property="storyUrl" />
+        <result column="story_info" property="storyInfo" />
+        <result column="task_count" property="taskCount" />
+    </resultMap>
+
+    <!-- 查询接口冲突信息 -->
+    <resultMap id="ConflictResultMap" type="com.ruqimobility.precisiontest.entity.dto.OpenApiConflictDto">
+        <id column="id" property="taskId" />
+        <result column="order_code" property="orderCode" />
+        <result column="tapd_project_name" property="projectName" />
+        <result column="story_ids" property="storyIds" />
+        <result column="tapd_project_id" property="projectId" />
+        <result column="path" property="path" />
+        <result column="interface_name" property="pathName" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_name, order_id, order_code, story_info, creator, type, progress, extra, create_time, update_time, group_id, tapd_project_id, tapd_project_name, story_url
+    </sql>
+
+    <select id="searchRecentRecord" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select *
+        from (select *,ROW_NUMBER() OVER (PARTITION BY story_ids ORDER BY create_time DESC) AS rank
+            from code_diff_task
+            where story_ids in
+            <foreach collection="storyIds" item="storyId" index="index" open="(" close=")" separator=",">
+                #{storyId,jdbcType=VARCHAR}
+            </foreach>
+            ) task
+        where task.rank = 1;
+    </select>
+
+    <select id="searchTask" parameterType="com.ruqimobility.precisiontest.entity.request.PrecisionPlanReq" resultMap="BaseResultMap">
+<!--        select *-->
+<!--        from (select *,ROW_NUMBER() OVER (PARTITION BY story_ids ORDER BY create_time DESC) AS rank-->
+<!--        from code_diff_task-->
+<!--        where 1=1-->
+<!--        <if test="orderCode != null and orderCode != ''">-->
+<!--            and order_code = #{orderCode, jdbcType=VARCHAR}-->
+<!--        </if>-->
+<!--        <if test="projectId != null and projectId != ''">-->
+<!--            and tapd_project_id = #{projectId, jdbcType=VARCHAR}-->
+<!--        </if>-->
+<!--        <if test="storyIds != null and storyIds != ''">-->
+<!--            and story_ids = #{storyIds, jdbcType=VARCHAR}-->
+<!--        </if>-->
+<!--        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">-->
+<!--            and create_time between #{startTime, jdbcType=VARCHAR} and #{endTime, jdbcType=VARCHAR}-->
+<!--        </if>-->
+<!--        ) task-->
+<!--        where task.rank = 1-->
+
+        select * from code_diff_task c1
+        where id in (
+            select max(c2.id) from precision_test.code_diff_task c2
+            where c2.story_ids = c1.story_ids
+        <if test="orderCode != null and orderCode != ''">
+            and c2.order_code = #{orderCode, jdbcType=VARCHAR}
+        </if>
+        <if test="projectId != null and projectId != ''">
+            and c2.tapd_project_id = #{projectId, jdbcType=VARCHAR}
+        </if>
+        <if test="storyIds != null and storyIds != ''">
+            and c2.story_ids = #{storyIds, jdbcType=VARCHAR}
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            and c2.create_time between #{startTime, jdbcType=VARCHAR} and #{endTime, jdbcType=VARCHAR}
+        </if>
+        )
+        order by c1.create_time desc
+
+    </select>
+
+    <select id="getConflictOrders" resultMap="ConflictResultMap">
+        select cdt.id,cdt.tapd_project_name,cdt.tapd_project_id,cdt.order_code,cdt.story_ids,caid.path,caid.interface_name from code_diff_task cdt ,code_analysis_interface_detail caid
+        where caid.path in
+        <foreach collection="interfacePaths" item="interfacePath" index="index" open="(" close=")" separator=",">
+            #{interfacePath,jdbcType=BIGINT}
+        </foreach>
+        and cdt.id = caid.relation_task_id and cdt.order_code != #{orderCode,jdbcType=VARCHAR}
+        group by order_code,path
+        order by order_code
+    </select>
+
+
+    <select id="getConflictOrders" resultMap="ConflictResultMap">
+        select cdt.id,cdt.tapd_project_name,cdt.tapd_project_id,cdt.order_code,cdt.story_ids,caid.path,caid.interface_name from code_diff_task cdt ,code_analysis_interface_detail caid
+        where caid.path in
+        <foreach collection="interfacePaths" item="interfacePath" index="index" open="(" close=")" separator=",">
+            #{interfacePath,jdbcType=BIGINT}
+        </foreach>
+        and cdt.id = caid.relation_task_id and cdt.order_code != #{orderCode,jdbcType=VARCHAR}
+        group by order_code,path
+        order by order_code
+    </select>
+
+
+    <select id="getProjectByGit" resultType="java.lang.String">
+        select cdt.tapd_project_id from code_diff_task cdt ,code_diff_task_info cdti
+        where cdt.id = cdti.task_relation_id AND cdt.tapd_project_id != #{projectId} AND cdti.project_id = #{gitName}
+        GROUP by cdt.tapd_project_id
+    </select>
+
+    <select id="getStoryAffect" resultMap="OnlineStoryMap">
+        select c1.story_ids,sum(cas.affect_code_lines) as affect_code_lines, sum(cas.affect_interface) as affect_interface, sum(cas.affect_call_chain) as affect_call_chain
+        from code_diff_task c1,code_analysis_summary cas
+        where c1.id in
+              (select max(c2.id) from precision_test.code_diff_task c2
+               where c2.story_ids = c1.story_ids and c2.story_ids in
+                <foreach collection="storyIds" item="storyId" index="index" open="(" close=")" separator=",">
+                    #{storyId,jdbcType=VARCHAR}
+                </foreach>
+               )
+          and c1.id = cas.task_relation_id
+        group by c1.story_ids
+    </select>
+
+    <select id="findTaskHistory" resultMap="BaseResultMap">
+        select * from code_diff_task cdt
+        where cdt.order_id = ( select order_id  from code_diff_task  where id= #{taskId}) AND cdt.id &lt;#{taskId}
+        order by create_time desc
+        LIMIT 1
+    </select>
+
+    <select id="getTaskByCode" resultMap="taskByCodeMap">
+        select id, task_name, order_code, tapd_project_id, tapd_project_name, story_info, count(1) as task_count
+        from code_diff_task
+        where 1=1
+        <if test="taskName != null and taskName != ''">
+            and task_name LIKE CONCAT('%', #{taskName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="orderCode != null and orderCode != ''">
+            and order_code = #{orderCode, jdbcType=VARCHAR}
+        </if>
+        <if test="tapdProjectId != null and tapdProjectId != ''">
+            and tapd_project_id = #{tapdProjectId, jdbcType=VARCHAR}
+        </if>
+        <if test="storyId != null and storyId != ''">
+            and story_ids LIKE CONCAT('%', #{storyId, jdbcType=VARCHAR}, '%')
+        </if>
+        group by order_code
+        order by create_time desc
+    </select>
+</mapper>

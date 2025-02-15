@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.JacgClassAnnotationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.JacgClassAnnotation">
+        <id column="record_id" property="recordId" />
+        <result column="simple_class_name" property="simpleClassName" />
+        <result column="annotation_name" property="annotationName" />
+        <result column="attribute_name" property="attributeName" />
+        <result column="attribute_type" property="attributeType" />
+        <result column="attribute_value" property="attributeValue" />
+        <result column="class_name" property="className" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        record_id, simple_class_name, annotation_name, attribute_name, attribute_type, attribute_value, class_name
+    </sql>
+    <select id="getClassAnnotations"
+            resultType="com.ruqimobility.precisiontest.entity.persistent.JacgClassAnnotation">
+        select * from  ${tableName}
+        where class_name = #{fullClassName}
+    </select>
+
+</mapper>

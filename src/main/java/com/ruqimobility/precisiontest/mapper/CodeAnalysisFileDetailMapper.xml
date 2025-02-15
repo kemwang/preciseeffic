@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruqimobility.precisiontest.mapper.CodeAnalysisFileDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisFileDetailJoinProjectBlacklist">
+        <id column="id" property="id" />
+        <result column="task_relation_id" property="taskRelationId" />
+        <result column="service_id" property="serviceId" />
+        <result column="file_name" property="fileName" />
+        <result column="path" property="path" />
+        <result column="affect_methods" property="affectMethods" />
+        <result column="change_lines" property="changeLines" />
+        <result column="type" property="type" />
+        <result column="change_type" property="changeType" />
+        <result column="compare_diff" property="compareDiff" />
+        <result column="extra" property="extra" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_name" property="projectName" />
+        <result column="permission" property="permission" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, task_relation_id, service_id, file_name, path, affect_methods, change_lines, type, change_type, compare_diff, extra, create_time, update_time, project_name, permission
+    </sql>
+
+    <select id="searchFiles" parameterType="com.ruqimobility.precisiontest.entity.request.AffectFileReportReq" resultMap="BaseResultMap">
+        select
+        id, task_relation_id, service_id, file_name, path, affect_methods, change_lines, type, change_type
+             , case when b.permission =1 then null else compare_diff end as compare_diff
+             , extra, create_time, update_time,a.project_name, b.permission
+        from code_analysis_file_detail a
+        left join precision_test.project_blacklist b on a.project_name = b.project_name
+        where 1=1
+        <if test="fileType != null and fileType != ''">
+            and type = #{fileType,jdbcType=VARCHAR}
+        </if>
+        <if test="filename != null and filename != ''">
+            and file_name like CONCAT('%',#{filename,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="taskId != null and taskId != ''">
+            and task_relation_id = #{taskId,jdbcType=INTEGER}
+        </if>
+        <if test="taskInfoId != null and taskInfoId != ''">
+            and service_id = #{taskInfoId,jdbcType=INTEGER}
+        </if>
+        order by change_lines desc
+    </select>
+
+
+    <insert id="replaceInto" parameterType="com.ruqimobility.precisiontest.entity.persistent.CodeAnalysisFileDetail">
+        INSERT INTO code_analysis_file_detail (
+        <if test="id != null">
+            id,
+        </if>
+        <if test="taskRelationId != null">
+            task_relation_id,
+        </if>
+        <if test="serviceId != null">
+            service_id,
+        </if>
+        <if test="fileName != null">
+            file_name,
+        </if>
+        <if test="path != null">
+            path,
+        </if>
+        <if test="affectMethods != null">
+            affect_methods,
+        </if>
+        <if test="changeLines != null">
+            change_lines,
+        </if>
+        <if test="type != null">
+            type,
+        </if>
+        <if test="changeType != null">
+            change_type,
+        </if>
+        <if test="compareDiff != null">
+            compare_diff,
+        </if>
+        <if test="projectName != null">
+            project_name,
+        </if>
+        extra )
+
+        VALUES(
+        <if test="id != null">
+            #{id},
+        </if>
+        <if test="taskRelationId != null">
+            #{taskRelationId},
+        </if>
+        <if test="serviceId != null">
+            #{serviceId},
+        </if>
+        <if test="fileName != null">
+            #{fileName},
+        </if>
+        <if test="path != null">
+            #{path},
+        </if>
+        <if test="affectMethods != null">
+            #{affectMethods},
+        </if>
+        <if test="changeLines != null">
+            #{changeLines},
+        </if>
+
+        <if test="type != null">
+            #{type},
+        </if>
+        <if test="changeType != null">
+            #{changeType},
+        </if>
+        <if test="compareDiff != null">
+            #{compareDiff},
+        </if>
+        <if test="projectName != null">
+            #{projectName},
+        </if>
+        extra)
+        ON DUPLICATE KEY UPDATE
+        <if test="taskRelationId != null">
+            task_relation_id=#{taskRelationId}
+        </if>
+        <if test="serviceId != null">
+            ,service_id=#{serviceId}
+        </if>
+        <if test="fileName != null">
+            ,file_name=#{fileName}
+        </if>
+        <if test="path != null">
+            ,path=#{path}
+        </if>
+        <if test="affectMethods != null">
+            ,affect_methods=#{affectMethods}
+        </if>
+        <if test="changeLines != null">
+            ,change_lines=#{changeLines}
+        </if>
+
+        <if test="type != null">
+            ,type=#{type}
+        </if>
+        <if test="changeType != null">
+            ,change_type=#{changeType}
+        </if>
+        <if test="compareDiff != null">
+            ,compare_diff=#{compareDiff}
+        </if>
+        <if test="projectName != null">
+            ,project_name=#{projectName}
+        </if>
+
+    </insert>
+</mapper>
